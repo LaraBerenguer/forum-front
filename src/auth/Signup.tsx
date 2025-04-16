@@ -37,11 +37,11 @@ const Signup = () => {
     const handleSignup = (values: z.infer<typeof formSchema>) => {
         try {
             setLoading(true);
-            addUser (values)
+            addUser (values);
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            setError(error instanceof Error ? error.message : 'An error occurred')
+            setError(error instanceof Error ? error.message : 'An error occurred');
         };
     }
 
