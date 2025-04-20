@@ -2,11 +2,13 @@
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    justify-content: center;
-    min-width: 320px;
-    min-height: 100vh;
+.outlet-container {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem 1.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
 }

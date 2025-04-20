@@ -1,14 +1,15 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router";
 import Loading from "../components/Loading";
+import Navbar from "@/components/Navbar";
 
 const Layout = () => {
     return (
-        <div /*className="bg-container"*/>
+        <div>
             <div className="Navbar">
-                {/*Navbar Component*/}
+                <Navbar />
             </div>
-            <main>
+            <main className="outlet-container">
                 <Suspense fallback={<Loading />}>
                     <Outlet />
                 </Suspense>
