@@ -5,10 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod"
 import { useState } from "react";
 import { addUser } from "../services/userApi"
-//shadcn
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import Loading from "@/components/Loading";
 import { Link } from "react-router";
 
@@ -23,9 +19,6 @@ const Signup = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    if (loading) { return <Loading /> };
-    if (error) { return <div className="error-message">{error}</div> };
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -35,10 +28,12 @@ const Signup = () => {
         },
     });
 
+    const { handleSubmit, register, formState: { errors } } = form;
+
     const handleSignup = (values: z.infer<typeof formSchema>) => {
         try {
             setLoading(true);
-            addUser (values);
+            addUser(values);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -46,57 +41,64 @@ const Signup = () => {
         };
     }
 
+    if (loading) { return <Loading /> };
+    if (error) { return <div className="error-message">{error}</div> };
+
     return (
-        <>
-            <h1 className="my-3">Sign Up</h1>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-8">
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Username" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+            <h1 className="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
+            <form onSubmit={handleSubmit(handleSignup)} className="space-y-6">            
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="username">
+                        Username
+                    </label>
+                    <input
+                        id="username"
+                        type="text"
+                        placeholder="Username"
+                        {...register("username")}
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-lime-500"
                     />
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Email" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input type="password" placeholder="Password" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type="submit">Sign Up</Button>
-                </form>
-                <div className="login-navigation text-center text-xs">
-                    Already have an account? <Link className='text-decoration-line: underline' to="/login">Login</Link>
+                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
                 </div>
-            </Form>
-        </>
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="email">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        placeholder="Email"
+                        {...register("email")}
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-lime-500"
+                    />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="password">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        {...register("password")}
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-lime-500"
+                    />
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+                </div>
+                <button type="submit" className="w-full bg-lime-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors">
+                    Sign Up
+                </button>
+            </form>
+
+            <div className="text-center text-gray-500 text-sm mt-4">
+                Already have an account?{" "}
+                <Link to="/login" className="text-lime-500 underline hover:text-green-500">
+                    Login
+                </Link>
+            </div>
+        </div>
     );
 };
 

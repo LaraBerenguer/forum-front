@@ -4,13 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { z } from "zod"
 import { useState } from "react";
-//shadcn
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import Loading from "@/components/Loading";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router";
+import Loading from "@/components/Loading";
 
 
 const formSchema = z.object({
@@ -23,14 +19,11 @@ const Login = () => {
     const [error, setError] = useState<string | null>(null);
     const { login } = useAuth();
 
-    if (loading) { return <Loading /> };
-    if (error) { return <div className="error-message">{error}</div> };
-
-    const form = useForm<z.infer<typeof formSchema>>({
+    const { register, handleSubmit, formState: { errors }, } = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: ""
+            password: "",
         },
     });
 
@@ -43,46 +36,57 @@ const Login = () => {
             setLoading(false);
             setError(error instanceof Error ? error.message : 'An error occurred');
         };
-    }
+    };
+
+    if (loading) { return <Loading /> };
+    if (error) { return <div className="error-message">{error}</div> };
 
     return (
-        <>
-            <h1 className="my-3">Login</h1>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-8">
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Email" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+            <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
+
+            <form onSubmit={handleSubmit(handleLogin)} className="space-y-6">
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium mb-1">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        {...register("email")}
+                        placeholder="Email"
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-lime-500"
                     />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input type="password" placeholder="Password" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type="submit">Login</Button>
-                </form>
-                <div className="login-navigation text-center text-xs">
-                    Don't have an account? <Link className='text-decoration-line: underline' to="/signup">Sign Up</Link>
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                 </div>
-            </Form>
-        </>
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium mb-1">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        {...register("password")}
+                        placeholder="Password"
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-lime-500"
+                    />
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+                </div>
+                <button
+                    type="submit"
+                    className="w-full bg-lime-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors"
+                >
+                    Login
+                </button>
+            </form>
+
+            <div className="text-center text-gray-500 text-sm mt-4">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-lime-600 underline hover:text-green-700">
+                    Sign Up
+                </Link>
+            </div>
+        </div>
     );
 };
 
